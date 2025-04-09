@@ -91,11 +91,11 @@ internal object PatchCommand : Runnable {
     }
 
     @CommandLine.Option(
-        names = ["-os", "--only-sign"],
+        names = ["--only-sign"],
         description = ["Only Sign the APK, without doing patches."],
         showDefaultValue = ALWAYS,
     )
-    private var onlySign = false
+    private var onlySign: Boolean = false
 
     @CommandLine.Option(
         names = ["--exclusive"],
