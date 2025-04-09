@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/Live-Custom-Apps/revanced-cli/compare/v1.0.0...v1.0.1) (2025-04-09)
+
+
+### Bug Fixes
+
+* Signer Command ([08aea0b](https://github.com/Live-Custom-Apps/revanced-cli/commit/08aea0b7d84934aa4631de4435ea17d2895dabcb))
+
 # 1.0.0 (2025-04-09)
 
 
