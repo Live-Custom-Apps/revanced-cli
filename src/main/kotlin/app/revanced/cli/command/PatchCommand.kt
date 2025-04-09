@@ -90,6 +90,13 @@ internal object PatchCommand : Runnable {
         }
     }
 
+    @CommandLine(
+        names = ["-os", "--only-sign"],
+        description = ["Only Sign the APK, without doing patches."],
+        showDefaultValue = ALWAYS,
+    )
+    private var onlySign: Boolean = false
+
     @CommandLine.Option(
         names = ["--exclusive"],
         description = ["Disable all patches except the ones enabled."],
@@ -273,7 +280,9 @@ internal object PatchCommand : Runnable {
             null
         }
 
-        // endregion
+        if (!onlySign)
+        {
+            // endregion
 
         // region Load patches
 
@@ -347,6 +356,21 @@ internal object PatchCommand : Runnable {
             } else {
                 patchedApkFile.copyTo(outputFilePath, overwrite = true)
             }
+        }
+        }
+        else
+        {
+            ApkUtils.signApk(
+                    apk,
+                    outputFilePath,
+                    signer,
+                    ApkUtils.KeyStoreDetails(
+                        keystoreFilePath,
+                        keyStorePassword,
+                        keyStoreEntryAlias,
+                        keyStoreEntryPassword,
+                    ),
+                )
         }
 
         logger.info("Saved to $outputFilePath")
