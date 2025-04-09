@@ -90,12 +90,12 @@ internal object PatchCommand : Runnable {
         }
     }
 
-    @CommandLine(
+    @CommandLine.Option(
         names = ["-os", "--only-sign"],
         description = ["Only Sign the APK, without doing patches."],
         showDefaultValue = ALWAYS,
     )
-    private var onlySign: Boolean = false
+    private var onlySign = false
 
     @CommandLine.Option(
         names = ["--exclusive"],
@@ -357,6 +357,21 @@ internal object PatchCommand : Runnable {
                 patchedApkFile.copyTo(outputFilePath, overwrite = true)
             }
         }
+
+        // region Install.
+
+        deviceSerial?.let {
+            runBlocking {
+                when (val result = installer!!.install(Installer.Apk(outputFilePath, packageName))) {
+                    RootInstallerResult.FAILURE -> logger.severe("Failed to mount the patched APK file")
+                    is AdbInstallerResult.Failure -> logger.severe(result.exception.toString())
+                    else -> logger.info("Installed the patched APK file")
+                }
+            }
+        }
+
+        // endregion
+
         }
         else
         {
@@ -374,20 +389,6 @@ internal object PatchCommand : Runnable {
         }
 
         logger.info("Saved to $outputFilePath")
-
-        // endregion
-
-        // region Install.
-
-        deviceSerial?.let {
-            runBlocking {
-                when (val result = installer!!.install(Installer.Apk(outputFilePath, packageName))) {
-                    RootInstallerResult.FAILURE -> logger.severe("Failed to mount the patched APK file")
-                    is AdbInstallerResult.Failure -> logger.severe(result.exception.toString())
-                    else -> logger.info("Installed the patched APK file")
-                }
-            }
-        }
 
         // endregion
 
